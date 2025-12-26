@@ -94,25 +94,25 @@ Below is the centroid distance sum trend for k=4..10:
 
 ## 🗂️ Project Structure
 
-
+```text
 PhD_Project_KMeans/
 │── data/
-│ ├── CC GENERAL.csv
-│ ├── CC_GENERAL_clean_scaled.csv
+│    ├── CC GENERAL.csv
+│    ├── CC_GENERAL_clean_scaled.csv
 │
 │── report/
-│ ├── centroid_distance_results.csv
-│ ├── centroid_distance_plot.png
-│ ├── KMeans_Gower_StepByStep_With_Analysis.docx
-│ ├── Project2_KMeans_Gower_Full_Report.docx
+│    ├── centroid_distance_results.csv
+│    ├── centroid_distance_plot.png
+│    ├── KMeans_Gower_StepByStep_With_Analysis.docx
+│    ├── Project2_KMeans_Gower_Full_Report.docx
 │
 │── src/
-│ ├── main.py
-│ ├── plot_results.py
+│    ├── main.py
+│    ├── plot_results.py
 │
+│── requirements.txt
 │── README.md
 │── .gitignore
-
 
 ---
 
