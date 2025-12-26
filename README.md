@@ -113,12 +113,3 @@ PhD_Project_KMeans/
 │── requirements.txt
 │── README.md
 │── .gitignore
-
----
-
-## ⚙️ Requirements
-
-Install required packages:
-
-```bash
-pip install pandas numpy scikit-learn matplotlib
