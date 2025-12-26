@@ -1,0 +1,140 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+
+# ============================================================
+# STEP 1: Load Data
+# ============================================================
+df = pd.read_csv("data/CC GENERAL.csv")
+
+print("✅ Original Shape:", df.shape)
+
+# ============================================================
+# STEP 2: Drop CUST_ID
+# ============================================================
+df.drop(columns=["CUST_ID"], inplace=True)
+
+print("✅ After dropping CUST_ID:", df.shape)
+
+# ============================================================
+# STEP 3: Fill missing values (numeric -> mean)
+# ============================================================
+missing_before = df.isnull().sum().sum()
+print("🔸 Missing values before filling:", missing_before)
+
+for col in df.columns:
+    df[col] = df[col].fillna(df[col].mean())
+
+missing_after = df.isnull().sum().sum()
+print("✅ Missing values after filling:", missing_after)
+
+# ============================================================
+# STEP 4: Normalize numeric features (Min-Max Scaling)
+# ============================================================
+scaler = MinMaxScaler()
+df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+
+print("✅ Data scaled successfully!")
+print(df_scaled.head())
+
+# Save cleaned data
+df_scaled.to_csv("data/CC_GENERAL_clean_scaled.csv", index=False)
+print("✅ Saved cleaned & scaled dataset to: data/CC_GENERAL_clean_scaled.csv")
+
+# ============================================================
+# STEP 5: Define Gower Distance (Numeric Case)
+# ============================================================
+def gower_distance_numeric(x, y):
+    """
+    Gower distance for numeric scaled data: mean absolute difference
+    """
+    return np.mean(np.abs(x - y))
+
+# Test Gower distance
+x0 = df_scaled.iloc[0].values
+x1 = df_scaled.iloc[1].values
+dist_test = gower_distance_numeric(x0, x1)
+print("\n✅ Gower Distance Test (row0 vs row1):", dist_test)
+
+# ============================================================
+# STEP 6: Custom KMeans using Vectorized Gower Distance
+# ============================================================
+def assign_clusters(data, centroids):
+    """
+    Fast assignment using vectorized Gower distance (numeric case).
+    distances shape = (n_samples, k)
+    """
+    distances = np.mean(np.abs(data[:, None, :] - centroids[None, :, :]), axis=2)
+    return np.argmin(distances, axis=1)
+
+def update_centroids(data, clusters, k):
+    """
+    Update centroids by taking the mean of points in each cluster.
+    """
+    new_centroids = []
+    for cluster_id in range(k):
+        points = data[clusters == cluster_id]
+        if len(points) == 0:
+            # Empty cluster fix: choose random point
+            new_centroids.append(data[np.random.randint(0, len(data))])
+        else:
+            new_centroids.append(points.mean(axis=0))
+    return np.array(new_centroids)
+
+def kmeans_gower(data, k, max_iter=50):
+    """
+    Custom K-Means algorithm using Gower distance (numeric case).
+    """
+    np.random.seed(42)
+
+    # Random init centroids
+    random_idx = np.random.choice(len(data), k, replace=False)
+    centroids = data[random_idx]
+
+    for iteration in range(max_iter):
+        clusters = assign_clusters(data, centroids)
+        new_centroids = update_centroids(data, clusters, k)
+
+        # Convergence check
+        if np.allclose(centroids, new_centroids):
+            print(f"✅ Converged at iteration {iteration+1}")
+            break
+
+        centroids = new_centroids
+
+    return clusters, centroids
+
+# ============================================================
+# STEP 7: Sum of distances between all centroid pairs
+# ============================================================
+def centroid_distance_sum(centroids):
+    """
+    Compute sum of Gower distances between all pairs of centroids.
+    """
+    total = 0
+    for i in range(len(centroids)):
+        for j in range(i + 1, len(centroids)):
+            total += gower_distance_numeric(centroids[i], centroids[j])
+    return total
+
+# ============================================================
+# STEP 8: Run KMeans for k=4..10 and store results
+# ============================================================
+data_np = df_scaled.values
+results = []
+
+for k in range(4, 11):
+    print(f"\n🔹 Running KMeans-Gower for k={k} ...")
+    clusters, centroids = kmeans_gower(data_np, k, max_iter=50)
+    dist_sum = centroid_distance_sum(centroids)
+
+    results.append({"k": k, "centroid_distance_sum": dist_sum})
+    print(f"✅ k={k}  Sum of centroid distances = {dist_sum:.6f}")
+
+# Save results to CSV
+results_df = pd.DataFrame(results)
+results_df.to_csv("report/centroid_distance_results.csv", index=False)
+
+print("\n✅ Results saved to report/centroid_distance_results.csv")
+print("\n📌 Final Results Table:")
+print(results_df)
