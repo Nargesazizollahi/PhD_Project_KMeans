@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load results
-df = pd.read_csv("report/centroid_distance_results.csv")
+df = pd.read_csv("../report/centroid_distance_results.csv")
 
 print("✅ Results loaded successfully!")
 print(df)
@@ -16,7 +16,7 @@ plt.title("Centroid Distance Sum for k=4 to k=10 (Gower Distance)")
 plt.grid(True)
 
 # Save plot
-plt.savefig("report/centroid_distance_plot.png", dpi=300)
+plt.savefig("../report/centroid_distance_plot.png", dpi=300)
 print("✅ Plot saved to report/centroid_distance_plot.png")
 
 plt.show()

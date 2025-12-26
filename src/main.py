@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 # ============================================================
 # STEP 1: Load Data
 # ============================================================
-df = pd.read_csv("data/CC GENERAL.csv")
+df = pd.read_csv("../data/CC GENERAL.csv")
 
 print("✅ Original Shape:", df.shape)
 
@@ -38,7 +38,7 @@ print("✅ Data scaled successfully!")
 print(df_scaled.head())
 
 # Save cleaned data
-df_scaled.to_csv("data/CC_GENERAL_clean_scaled.csv", index=False)
+df_scaled.to_csv("../data/CC_GENERAL_clean_scaled.csv", index=False)
 print("✅ Saved cleaned & scaled dataset to: data/CC_GENERAL_clean_scaled.csv")
 
 # ============================================================
@@ -133,7 +133,7 @@ for k in range(4, 11):
 
 # Save results to CSV
 results_df = pd.DataFrame(results)
-results_df.to_csv("report/centroid_distance_results.csv", index=False)
+results_df.to_csv("../report/centroid_distance_results.csv", index=False)
 
 print("\n✅ Results saved to report/centroid_distance_results.csv")
 print("\n📌 Final Results Table:")
