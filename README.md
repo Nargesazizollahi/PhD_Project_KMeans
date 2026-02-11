@@ -1,114 +1,124 @@
-# 📌 Customer Segmentation using Custom K-Means (Gower Distance)
+# PhD Project – Custom K-Means with Gower Distance
 
-This project implements a **custom K-Means clustering algorithm** using **Gower distance** instead of Euclidean distance.  
-The goal is to cluster credit card customers into meaningful groups based on their financial behavior and transaction patterns.
+## 📌 Project Overview
 
-> ✅ **Key Point:** Standard `sklearn` K-Means cannot be used because it only supports **Euclidean distance**.  
-> In this project, we built our own K-Means using **Gower distance**.
+This project implements a custom version of the K-Means clustering algorithm using **Gower distance** instead of Euclidean distance, as required in the PhD Machine Learning course project.
 
----
-
-## 📂 Dataset
-
-- **Name:** CC GENERAL Dataset
-- **File:** `data/CC GENERAL.csv`
-- **Samples:** 8950 customers
-- **Features:** 18 (17 used after removing customer ID)
-
-The dataset contains variables such as balance, purchases, cash advances, payment behaviors, and credit limits.
+The dataset used is the *Credit Card Dataset (CC GENERAL.csv)*.
 
 ---
 
-## ✅ Project Workflow (Steps)
+## 📂 Dataset Information
 
-### **Step 1: Data Preprocessing**
-✔ Remove `CUST_ID` (identifier column)  
-✔ Fill missing numeric values with **mean imputation**  
-✔ Normalize all features using **Min-Max scaling** (range [0,1])  
-✔ Save cleaned dataset:  
-`data/CC_GENERAL_clean_scaled.csv`
+- Number of samples: 8950
+- Original number of features: 18
+- After removing ID column: 17 features
+- Data type: Financial numerical features
 
 ---
 
-### **Step 2: Gower Distance**
-Since all features are numeric and scaled to [0,1], the **Gower distance** between two customers \(x\) and \(y\) is:
+## 🧹 Data Preprocessing
 
-\[
-Gower(x,y) = \frac{1}{p} \sum_{i=1}^{p} |x_i - y_i|
-\]
+The following preprocessing steps were applied:
 
-✅ Validation test on the first two customers:
-
-**Gower(row0, row1) = 0.0803678613**
-
----
-
-### **Step 3: Custom K-Means using Gower Distance**
-A custom K-Means algorithm was implemented with:
-- Random centroid initialization
-- Cluster assignment based on **Gower distance**
-- Centroid update using mean of each cluster
-- Stop condition: convergence or max iterations
+1. The column `CUST_ID` was removed since it represents only an identifier.
+2. Missing values were handled as follows:
+   - Numeric features → replaced with the **mean** of the feature.
+   - Categorical features (if any) → replaced with the **mode**.
+3. A fixed random seed (42) was used to ensure reproducibility.
 
 ---
 
-### **Step 4: Run clustering for k = 4 to 10**
-For each value of k, we computed:
+## 📏 Gower Distance
 
+Since Euclidean distance is not suitable for mixed-type datasets, a custom implementation of **Gower distance** was developed.
+
+For each feature:
+
+- Numeric:
+  
+  d(i,j) = |x_i - x_j| / range
+
+- Categorical:
+  
+  d(i,j) = 0 (if equal)  
+  d(i,j) = 1 (if different)
+
+The final Gower distance is computed as the average over all features.
+
+---
+
+## ⚙️ Custom K-Means Algorithm
+
+The clustering algorithm was implemented from scratch with:
+
+1. Random initialization of centroids (seed = 42)
+2. Assignment step using Gower distance
+3. Update step:
+   - Numeric features → mean of cluster members
+   - Categorical features → mode of cluster members
+4. Maximum iterations: 100
+5. Convergence when cluster assignments no longer change
+
+---
+
+## 📊 Required Evaluation Metric
+
+<<<<<<< HEAD
 ✅ “Sum of Gower distances of each point to its assigned centroid (Gower-based inertia / within-cluster distance)”
 (This is the required metric for the project.)
+=======
+For each k in {4, 5, 6, 7, 8, 9, 10}, the following metric was computed:
+>>>>>>> fd2b5a0 (Final implementation: Custom Gower KMeans + centroid distance metric + plot)
 
-Results are saved in:  
-`report/centroid_distance_results.csv`
+**Sum of pairwise Gower distances between all cluster centroids**
+
+S(k) = Σ D(c_a, c_b) for a < b
+
+This metric measures how separated the cluster centers are from each other.
 
 ---
 
-### **Step 5: Visualization**
-A plot was generated to show how centroid separation changes as k increases:
+## 📈 Final Results
+
+| k  | Sum of Pairwise Centroid Distances |
+|----|------------------------------------|
+| 4  | 0.760745 |
+| 5  | 1.193518 |
+| 6  | 1.982623 |
+| 7  | 2.960903 |
+| 8  | 3.895007 |
+| 9  | 5.078088 |
+| 10 | 6.231211 |
+
+The results show a monotonic increase as k increases, which is expected since increasing the number of clusters increases the number of centroid pairs.
+
+The corresponding visualization is stored in:
 
 ✅ `report/within_cluster_distance_results.csv`
 
 ---
 
-## 🧾 Final Results
+## 📈 Visualization
 
-| k  | Sum of centroid distances (Gower) |
-|----|-----------------------------------|
-| 4  | 0.709048 |
-| 5  | 1.195053 |
-| 6  | 1.925172 |
-| 7  | 2.823604 |
-| 8  | 3.898224 |
-| 9  | 4.891282 |
-| 10 | 6.038821 |
-
----
-
-## 📈 Plot
-
-Below is the centroid distance sum trend for k=4..10:
+The following plot shows the trend of the sum of pairwise centroid distances for k = 4 to 10.
 
 ![Centroid Distance Plot](report/centroid_distance_plot.png)
 
+
 ---
 
-## 🗂️ Project Structure
-
-```text
 PhD_Project_KMeans/
 │── data/
-│    ├── CC GENERAL.csv
-│    ├── CC_GENERAL_clean_scaled.csv
+│    └── CC GENERAL.csv
 │
 │── report/
 │    ├── centroid_distance_results.csv
-│    ├── centroid_distance_plot.png
-│    ├── KMeans_Gower_StepByStep_With_Analysis.docx
-│    ├── Project2_KMeans_Gower_Full_Report.docx
+│    └── centroid_distance_plot.png
 │
 │── src/
 │    ├── main.py
-│    ├── plot_results.py
+│    └── plot_centroid_distances.py
 │
 │── requirements.txt
 │── README.md
