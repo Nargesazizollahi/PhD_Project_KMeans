@@ -81,7 +81,7 @@ def update_centroids(data, clusters, k):
             new_centroids.append(points.mean(axis=0))
     return np.array(new_centroids)
 
-def kmeans_gower(data, k, max_iter=50):
+def kmeans_gower(data, k, max_iter=100):
     """
     Custom K-Means algorithm using Gower distance (numeric case).
     """
@@ -105,17 +105,18 @@ def kmeans_gower(data, k, max_iter=50):
     return clusters, centroids
 
 # ============================================================
-# STEP 7: Sum of distances between all centroid pairs
+# STEP 7 (FIXED): Sum of distances of points to their assigned centroids
 # ============================================================
-def centroid_distance_sum(centroids):
+def within_cluster_distance_sum(data, clusters, centroids):
     """
-    Compute sum of Gower distances between all pairs of centroids.
+    Compute sum of Gower distances from each point to its assigned centroid.
+    (Gower-based inertia)
     """
-    total = 0
-    for i in range(len(centroids)):
-        for j in range(i + 1, len(centroids)):
-            total += gower_distance_numeric(centroids[i], centroids[j])
-    return total
+    # distances for all points to all centroids: shape (n_samples, k)
+    distances = np.mean(np.abs(data[:, None, :] - centroids[None, :, :]), axis=2)
+    # pick distance to assigned centroid for each point and sum
+    return distances[np.arange(len(data)), clusters].sum()
+
 
 # ============================================================
 # STEP 8: Run KMeans for k=4..10 and store results
@@ -126,15 +127,16 @@ results = []
 for k in range(4, 11):
     print(f"\n🔹 Running KMeans-Gower for k={k} ...")
     clusters, centroids = kmeans_gower(data_np, k, max_iter=50)
-    dist_sum = centroid_distance_sum(centroids)
 
-    results.append({"k": k, "centroid_distance_sum": dist_sum})
-    print(f"✅ k={k}  Sum of centroid distances = {dist_sum:.6f}")
+    inertia_gower = within_cluster_distance_sum(data_np, clusters, centroids)
 
-# Save results to CSV
+    results.append({"k": k, "within_cluster_distance_sum": inertia_gower})
+    print(f"✅ k={k}  Within-cluster distance sum = {inertia_gower:.6f}")
+
 results_df = pd.DataFrame(results)
-results_df.to_csv("../report/centroid_distance_results.csv", index=False)
+results_df.to_csv("../report/within_cluster_distance_results.csv", index=False)
 
-print("\n✅ Results saved to report/centroid_distance_results.csv")
+print("\n✅ Results saved to report/within_cluster_distance_results.csv")
 print("\n📌 Final Results Table:")
 print(results_df)
+
