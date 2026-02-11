@@ -126,7 +126,7 @@ results = []
 
 for k in range(4, 11):
     print(f"\n🔹 Running KMeans-Gower for k={k} ...")
-    clusters, centroids = kmeans_gower(data_np, k, max_iter=50)
+    clusters, centroids = kmeans_gower(data_np, k, max_iter=100)
 
     inertia_gower = within_cluster_distance_sum(data_np, clusters, centroids)
 
