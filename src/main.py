@@ -141,7 +141,8 @@ for k in range(4, 11):
     print(f"✅ k={k}  Within-cluster distance sum = {inertia_gower:.6f}")
 
 results_df = pd.DataFrame(results)
-results_df.to_csv("../report/within_cluster_distance_results.csv", index=False)
+report_path = os.path.join(base_path, "..", "report", "within_cluster_distance_results.csv")
+results_df.to_csv(report_path, index=False)
 
 print("\n✅ Results saved to report/within_cluster_distance_results.csv")
 print("\n📌 Final Results Table:")
