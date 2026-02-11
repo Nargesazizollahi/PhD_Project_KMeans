@@ -36,11 +36,11 @@ Since Euclidean distance is not suitable for mixed-type datasets, a custom imple
 For each feature:
 
 - Numeric:
-  
+
   d(i,j) = |x_i - x_j| / range
 
 - Categorical:
-  
+
   d(i,j) = 0 (if equal)  
   d(i,j) = 1 (if different)
 
@@ -64,12 +64,7 @@ The clustering algorithm was implemented from scratch with:
 
 ## 📊 Required Evaluation Metric
 
-<<<<<<< HEAD
-✅ “Sum of Gower distances of each point to its assigned centroid (Gower-based inertia / within-cluster distance)”
-(This is the required metric for the project.)
-=======
 For each k in {4, 5, 6, 7, 8, 9, 10}, the following metric was computed:
->>>>>>> fd2b5a0 (Final implementation: Custom Gower KMeans + centroid distance metric + plot)
 
 **Sum of pairwise Gower distances between all cluster centroids**
 
@@ -93,9 +88,9 @@ This metric measures how separated the cluster centers are from each other.
 
 The results show a monotonic increase as k increases, which is expected since increasing the number of clusters increases the number of centroid pairs.
 
-The corresponding visualization is stored in:
+The numerical results are stored in:
 
-✅ `report/within_cluster_distance_results.csv`
+`report/centroid_distance_results.csv`
 
 ---
 
@@ -105,21 +100,28 @@ The following plot shows the trend of the sum of pairwise centroid distances for
 
 ![Centroid Distance Plot](report/centroid_distance_plot.png)
 
-
 ---
 
+## ▶️ How to Run
+
+From the project root:
+
+```bash
+python src/main.py
+
+
+## 🗂️ Project Structure
+
+```text
 PhD_Project_KMeans/
-│── data/
-│    └── CC GENERAL.csv
-│
-│── report/
-│    ├── centroid_distance_results.csv
-│    └── centroid_distance_plot.png
-│
-│── src/
-│    ├── main.py
-│    └── plot_centroid_distances.py
-│
-│── requirements.txt
-│── README.md
-│── .gitignore
+├── data/
+│   └── CC GENERAL.csv
+├── report/
+│   ├── centroid_distance_results.csv
+│   └── centroid_distance_plot.png
+├── src/
+│   ├── main.py
+│   └── plot_centroid_distances.py
+├── requirements.txt
+├── README.md
+└── .gitignore
