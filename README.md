@@ -55,7 +55,7 @@ A custom K-Means algorithm was implemented with:
 ### **Step 4: Run clustering for k = 4 to 10**
 For each value of k, we computed:
 
-✅ **Sum of Gower distances between all centroid pairs**  
+✅ “Sum of Gower distances of each point to its assigned centroid (Gower-based inertia / within-cluster distance)”
 (This is the required metric for the project.)
 
 Results are saved in:  
@@ -66,7 +66,7 @@ Results are saved in:
 ### **Step 5: Visualization**
 A plot was generated to show how centroid separation changes as k increases:
 
-✅ `report/centroid_distance_plot.png`
+✅ `report/within_cluster_distance_results.csv`
 
 ---
 
