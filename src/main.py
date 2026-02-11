@@ -5,7 +5,13 @@ from sklearn.preprocessing import MinMaxScaler
 # ============================================================
 # STEP 1: Load Data
 # ============================================================
-df = pd.read_csv("../data/CC GENERAL.csv")
+import os
+
+base_path = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(base_path, "..", "data", "CC GENERAL.csv")
+
+df = pd.read_csv(data_path)
+
 
 print("✅ Original Shape:", df.shape)
 
