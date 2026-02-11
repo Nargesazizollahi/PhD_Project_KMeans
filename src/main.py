@@ -44,7 +44,8 @@ print("✅ Data scaled successfully!")
 print(df_scaled.head())
 
 # Save cleaned data
-df_scaled.to_csv("../data/CC_GENERAL_clean_scaled.csv", index=False)
+clean_data_path = os.path.join(base_path, "..", "data", "CC_GENERAL_clean_scaled.csv")
+df_scaled.to_csv(clean_data_path, index=False)
 print("✅ Saved cleaned & scaled dataset to: data/CC_GENERAL_clean_scaled.csv")
 
 # ============================================================
